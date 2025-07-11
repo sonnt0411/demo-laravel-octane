@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     libzip-dev \
     cron \
-    nginx
+    nginx \
+    procps
 
 RUN groupadd -g 1000 $DOCKER_USER \
     && useradd -u 1000 -g $DOCKER_USER $DOCKER_USER
@@ -40,11 +41,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN if [ "$XDEBUG_ENABLED" = 1 ] ; then install-php-extensions xdebug ; fi
 
 # Copy source code
-COPY . /sprix/app/dojo-core
-# RUN chown -R $DOCKER_USER:$DOCKER_USER /sprix/app/dojo-core
+COPY . /app
+# RUN chown -R $DOCKER_USER:$DOCKER_USER /app
 
 # Set working directory
-WORKDIR /sprix/app/dojo-core
+WORKDIR /app
 
 # Install Laravel dependencies and Laravel Octane
 RUN cp .env.example .env
@@ -52,9 +53,9 @@ RUN composer install
 RUN php artisan key:generate
 
 # Set proper permissions
-# RUN chown -R $DOCKER_USER:$DOCKER_USER /sprix/app/dojo-core
-RUN chmod -R 755 /sprix/app/dojo-core/storage
-RUN chmod -R 755 /sprix/app/dojo-core/bootstrap/cache
+# RUN chown -R $DOCKER_USER:$DOCKER_USER /app
+RUN chmod -R 755 /app/storage
+RUN chmod -R 755 /app/bootstrap/cache
 
 # Copy Nginx configuration
 COPY docker/nginx-octane/nginx.conf /etc/nginx/sites-available/default
@@ -73,7 +74,7 @@ RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 RUN nginx -t
 
 # Copy startup script for FrankenPHP with Octane
-COPY docker/frankenphp/start-octane.sh /usr/local/bin/start-octane.sh
+COPY docker/octane/start-octane.sh /usr/local/bin/start-octane.sh
 RUN chmod +x /usr/local/bin/start-octane.sh
 
 # Expose port 8080 (Nginx)
@@ -90,7 +91,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 RUN npm install -g chokidar-cli
 
 # Install Chokidar in the Laravel project for Octane watch mode
-WORKDIR /sprix/app/dojo-core
+WORKDIR /app
 RUN npm init -y && npm install chokidar --save-dev
 
 # Switch to non-root user

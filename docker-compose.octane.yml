@@ -6,10 +6,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.octane
+      target: development
     image: demo-laravel-octane
     container_name: demo-laravel_octane
     # Override CMD for development (1 worker, watch enabled)
-    command: ["--workers=1", "--watch"]
+    command: ["--workers=4", "--max-requests=100", "--watch"]
     restart: unless-stopped
     ports:
       - "8180:8080"
@@ -25,9 +26,6 @@ services:
       - DB_USERNAME=laravel
       - DB_PASSWORD=secret
       - SERVER_NAME=:8000
-      - FRANKENPHP_CONFIG=worker /app/public/frankenphp-worker.php
-      - FRANKENPHP_NUM_WORKERS=auto
-      - FRANKENPHP_NUM_THREADS=2
       - LOG_LEVEL=INFO
       - AUTO_MIGRATE=false
       - OCTANE_HOST=0.0.0.0

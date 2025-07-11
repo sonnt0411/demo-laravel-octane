@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  # Laravel Octane with FrankenPHP (internal)
+  octane:
+    build:
+      context: .
+      dockerfile: Dockerfile.octane
+    image: demo-laravel-octane
+    container_name: demo-laravel_octane
+    # Override CMD for development (1 worker, watch enabled)
+    command: ["--workers=1", "--watch"]
+    restart: unless-stopped
+    ports:
+      - "8180:8080"
+    volumes:
+      - ./:/app
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=octane-mysql
+      - DB_PORT=3306
+      - DB_DATABASE=laravel
+      - DB_USERNAME=laravel
+      - DB_PASSWORD=secret
+      - SERVER_NAME=:8000
+      - FRANKENPHP_CONFIG=worker /app/public/frankenphp-worker.php
+      - FRANKENPHP_NUM_WORKERS=auto
+      - FRANKENPHP_NUM_THREADS=2
+      - LOG_LEVEL=INFO
+      - AUTO_MIGRATE=false
+      - OCTANE_HOST=0.0.0.0
+      - OCTANE_PORT=8000
+    networks:
+      - octane
+
+  # MySQL Database
+  octane-mysql:
+    image: mysql:8.0
+    container_name: laravel_octane_mysql
+    restart: unless-stopped
+    ports:
+      - "3406:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - mysql_octane_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password --innodb-buffer-pool-size=512M
+    networks:
+      - octane
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "laravel", "-psecret"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache & Sessions
+  redis:
+    image: redis:7-alpine
+    container_name: laravel_octane_redis
+    restart: unless-stopped
+    ports:
+      - "6479:6379"
+    volumes:
+      - redis_octane_data:/data
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - octane
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # phpMyAdmin (optional)
+  octane-phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: laravel_octane_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8181:80"
+    environment:
+      PMA_HOST: octane-mysql
+      PMA_USER: laravel
+      PMA_PASSWORD: secret
+    depends_on:
+      octane-mysql:
+        condition: service_healthy
+    networks:
+      - octane
+
+  # Redis Commander (optional)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: laravel_octane_redis_commander
+    restart: unless-stopped
+    ports:
+      - "8182:8081"
+    environment:
+      REDIS_HOSTS: redis:redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - octane
+
+# Networks
+networks:
+  octane:
+    driver: bridge
+
+# Volumes
+volumes:
+  mysql_octane_data:
+    driver: local
+  redis_octane_data:
+    driver: local 

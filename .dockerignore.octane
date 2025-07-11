@@ -1,0 +1,92 @@
+# Git and version control
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+!OCTANE-README.md
+
+# Environment files
+.env
+.env.*
+!env.octane.example
+
+# Dependencies (will be installed in container)
+vendor/
+node_modules/
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.editorconfig
+
+# Logs and temporary files
+*.log
+storage/logs/*
+!storage/logs/.gitkeep
+
+# Laravel cache and compiled files
+.cache
+bootstrap/cache/*
+!bootstrap/cache/.gitkeep
+storage/framework/cache/*
+!storage/framework/cache/.gitkeep
+storage/framework/sessions/*
+!storage/framework/sessions/.gitkeep
+storage/framework/views/*
+!storage/framework/views/.gitkeep
+
+# Testing
+coverage/
+.phpunit.result.cache
+tests/
+
+# Docker files (avoid recursion)
+Dockerfile
+Dockerfile.*
+docker-compose*.yml
+.dockerignore*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.phpintel/
+
+# Build artifacts
+/public/hot
+/public/storage
+/storage/*.key
+
+# NPM and frontend build files
+package*.json
+vite.config.js
+webpack.mix.js
+/public/build
+/public/mix-manifest.json
+
+# Development tools
+.sail/
+.devcontainer/
+
+# Backup and archive files
+*.sql
+*.tar.gz
+*.zip
+backup/
+
+# Local configuration
+auth.json
+.phpunit.cache 

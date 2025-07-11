@@ -1,0 +1,111 @@
+# Use FrankenPHP base image with PHP 8.4
+FROM dunglas/frankenphp:php8.4.5-bookworm AS base
+
+# Arguments for build customization
+ARG XDEBUG_ENABLED=0
+ARG MARIADB_CLIENT_ENABLED=0
+ARG DOCKER_USER=sprix
+
+# Install system dependencies and create user
+RUN apt-get update && apt-get install -y \
+    w3m \
+    git \
+    unzip \
+    zlib1g-dev \
+    libzip-dev \
+    cron \
+    nginx
+
+RUN groupadd -g 1000 $DOCKER_USER \
+    && useradd -u 1000 -g $DOCKER_USER $DOCKER_USER
+
+# Install PHP extensions
+RUN install-php-extensions \
+    zip \
+    pdo_mysql \
+    opcache \
+    pcntl \
+    sockets
+
+# Install `mysql` command from package `mariadb-client` if enabled
+RUN if [ "$MARIADB_CLIENT_ENABLED" = 1 ] ; then apt-get install -y mariadb-client ; fi
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy configuration files
+# COPY docker/image-files/usr/local/etc/php/ /usr/local/etc/php/
+
+# Install xdebug if enabled
+RUN if [ "$XDEBUG_ENABLED" = 1 ] ; then install-php-extensions xdebug ; fi
+
+# Copy source code
+COPY . /sprix/app/dojo-core
+# RUN chown -R $DOCKER_USER:$DOCKER_USER /sprix/app/dojo-core
+
+# Set working directory
+WORKDIR /sprix/app/dojo-core
+
+# Install Laravel dependencies and Laravel Octane
+RUN cp .env.example .env
+RUN composer install
+RUN php artisan key:generate
+
+# Set proper permissions
+# RUN chown -R $DOCKER_USER:$DOCKER_USER /sprix/app/dojo-core
+RUN chmod -R 755 /sprix/app/dojo-core/storage
+RUN chmod -R 755 /sprix/app/dojo-core/bootstrap/cache
+
+# Copy Nginx configuration
+COPY docker/nginx-octane/nginx.conf /etc/nginx/sites-available/default
+
+# Configure Nginx to run as DOCKER_USER
+# RUN sed -i "s/user www-data;/user $DOCKER_USER;/" /etc/nginx/nginx.conf
+# RUN mkdir -p /var/log/nginx && chown -R $DOCKER_USER:$DOCKER_USER /var/log/nginx
+# RUN mkdir -p /var/cache/nginx && chown -R $DOCKER_USER:$DOCKER_USER /var/cache/nginx
+# RUN mkdir -p /run && chown -R $DOCKER_USER:$DOCKER_USER /run
+
+# Enable Nginx site and remove default site
+RUN rm -f /etc/nginx/sites-enabled/default
+RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# Test Nginx configuration
+RUN nginx -t
+
+# Copy startup script for FrankenPHP with Octane
+COPY docker/frankenphp/start-octane.sh /usr/local/bin/start-octane.sh
+RUN chmod +x /usr/local/bin/start-octane.sh
+
+# Expose port 8080 (Nginx)
+EXPOSE 8080
+
+# Development stage with Node.js/npm for file watching
+FROM base AS development
+
+# Install Node.js and npm for file watching
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
+# Install Chokidar for file watching (globally and in project)
+RUN npm install -g chokidar-cli
+
+# Install Chokidar in the Laravel project for Octane watch mode
+WORKDIR /sprix/app/dojo-core
+RUN npm init -y && npm install chokidar --save-dev
+
+# Switch to non-root user
+# USER $DOCKER_USER
+
+# Set entrypoint and default command for development
+ENTRYPOINT ["/usr/local/bin/start-octane.sh"]
+CMD ["--workers=1", "--watch"]
+
+# Production stage without Node.js/npm
+FROM base AS production
+
+# Switch to non-root user
+# USER $DOCKER_USER
+
+# Set entrypoint and default command for production
+ENTRYPOINT ["/usr/local/bin/start-octane.sh"]
+CMD ["--workers=4"] 

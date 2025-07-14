@@ -1,34 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laravel Dependency Injection Test</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 30px;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
-        
+@extends('layouts.app')
+
+@section('title', 'Laravel Dependency Injection Test')
+@section('page_title', 'Basic Dependency Injection Test')
+
+@section('additional_styles')
+<style>
         h2 {
             color: #34495e;
             margin-top: 30px;
@@ -154,10 +130,11 @@
             border-radius: 6px;
             margin-top: 30px;
         }
-    </style>
-</head>
-<body>
-    <div class="container">
+</style>
+@endsection
+
+@section('content')
+<div class="container">
         <h1>Laravel Dependency Injection Test Results</h1>
         
         @if(isset($test_type))
@@ -247,6 +224,5 @@
                 </ul>
             </p>
         </div>
-    </div>
-</body>
-</html> 
+</div>
+@endsection 

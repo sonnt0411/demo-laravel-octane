@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $test_title)
+@section('page_title', 'Request Scoped Test (Octane Safe)')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">

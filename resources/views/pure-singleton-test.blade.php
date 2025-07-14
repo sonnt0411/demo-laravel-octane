@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Pure Singleton Pattern Test')
+@section('page_title', 'Pure Singleton Pattern Test')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">

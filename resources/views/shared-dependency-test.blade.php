@@ -1,34 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shared Dependency Injection Test</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 30px;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            border-bottom: 3px solid #e74c3c;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
-        
+@extends('layouts.app')
+
+@section('title', 'Shared Dependency Injection Test')
+@section('page_title', 'Shared Dependency Test')
+
+@section('additional_styles')
+<style>
         h2 {
             color: #34495e;
             margin-top: 30px;
@@ -225,10 +201,11 @@
             border-radius: 4px;
             border-left: 3px solid #f5c6cb;
         }
-    </style>
-</head>
-<body>
-    <div class="container">
+</style>
+@endsection
+
+@section('content')
+<div class="container">
         <h1>Shared Dependency Injection Test</h1>
         
         <div class="test-overview">
@@ -370,6 +347,5 @@
         </div>
         
         <a href="{{ route('dependency.test') }}" class="back-link">← Back to Main Tests</a>
-    </div>
-</body>
-</html> 
+</div>
+@endsection 

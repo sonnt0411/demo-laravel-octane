@@ -1,18 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laravel Shared Interface Dependency Injection Test</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        
+@extends('layouts.app')
+
+@section('title', 'Laravel Shared Interface Dependency Injection Test')
+@section('page_title', 'Shared Interface Dependency Test')
+
+@section('additional_styles')
+<style>
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -203,10 +195,11 @@
             font-size: 11px;
             font-weight: bold;
         }
-    </style>
-</head>
-<body>
-    <div class="container">
+</style>
+@endsection
+
+@section('content')
+<div class="container">
         <h1>🔗 Shared Interface Dependency Injection Test</h1>
         
         <div class="summary">
@@ -386,6 +379,5 @@
                 <p>🔍 This means each service gets its own fresh instance of the concrete implementation, even when injecting the same interface.</p>
             @endif
         </div>
-    </div>
-</body>
-</html> 
+</div>
+@endsection 

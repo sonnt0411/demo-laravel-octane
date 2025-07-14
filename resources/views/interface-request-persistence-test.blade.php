@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Interface Request Persistence Test')
+@section('page_title', 'Interface Request Persistence Test')
 
 @section('additional_styles')
     <style>

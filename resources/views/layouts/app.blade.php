@@ -111,6 +111,118 @@
             51%, 100% { opacity: 0; }
         }
         
+        .test-navigation {
+            background: #2c3e50;
+            border-bottom: 3px solid #34495e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            padding: 15px 0 0 0;
+        }
+        
+        .nav-category {
+            margin-bottom: 2px;
+        }
+        
+        .nav-category-title {
+            color: #bdc3c7;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            padding: 0 10px;
+        }
+        
+        .nav-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            margin-bottom: 12px;
+        }
+        
+        .nav-item {
+            display: inline-block;
+            text-decoration: none;
+            color: #ecf0f1;
+            padding: 8px 16px;
+            background: #34495e;
+            border-radius: 6px 6px 0 0;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+            border-bottom-color: #2980b9;
+        }
+        
+        .nav-item.active {
+            background: #3498db;
+            color: white;
+            border-bottom-color: #f39c12;
+            font-weight: 600;
+        }
+        
+        .nav-item.home {
+            background: #27ae60;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .nav-item.home:hover,
+        .nav-item.home.active {
+            background: #229954;
+            border-bottom-color: #f1c40f;
+        }
+        
+        .nav-item.utility {
+            background: #8e44ad;
+        }
+        
+        .nav-item.utility:hover,
+        .nav-item.utility.active {
+            background: #9b59b6;
+            border-bottom-color: #e74c3c;
+        }
+        
+        .nav-breadcrumb {
+            background: #34495e;
+            padding: 8px 0;
+            font-size: 12px;
+            color: #95a5a6;
+        }
+        
+        .breadcrumb-path {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .breadcrumb-sep {
+            color: #7f8c8d;
+        }
+        
+        .breadcrumb-current {
+            color: #3498db;
+            font-weight: 600;
+        }
+        
         .main-content {
             padding: 20px 0;
         }
@@ -122,6 +234,23 @@
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             padding: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .nav-group {
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .nav-item {
+                border-radius: 6px;
+                text-align: center;
+            }
         }
         
         /* Base styles for all test views */
@@ -395,6 +524,99 @@
         </div>
     </div>
     
+    <!-- Test Navigation -->
+    <nav class="test-navigation">
+        <div class="nav-container">
+            <div class="nav-tabs">
+                <div class="nav-category" style="width: 100%;">
+                    
+                    <!-- Home Section -->
+                    <div class="nav-group">
+                        <a href="{{ route('tests.index') }}" class="nav-item home {{ request()->routeIs('tests.index') ? 'active' : '' }}">
+                            🏠 Test Suite Home
+                        </a>
+                    </div>
+                    
+                    <!-- Basic Dependency Tests -->
+                    <div class="nav-category-title">Basic Dependency Injection</div>
+                    <div class="nav-group">
+                        <a href="{{ route('dependency.test') }}" class="nav-item {{ request()->routeIs('dependency.test') ? 'active' : '' }}">
+                            🔧 Basic DI Test
+                        </a>
+                        <a href="{{ route('dependency.singleton') }}" class="nav-item {{ request()->routeIs('dependency.singleton') ? 'active' : '' }}">
+                            🔒 Singleton Test
+                        </a>
+                        <a href="{{ route('dependency.shared') }}" class="nav-item {{ request()->routeIs('dependency.shared') ? 'active' : '' }}">
+                            🤝 Shared Dependency Test
+                        </a>
+                    </div>
+                    
+                    <!-- Interface Tests -->
+                    <div class="nav-category-title">Interface-Based Tests</div>
+                    <div class="nav-group">
+                        <a href="{{ route('interface.dependency.test') }}" class="nav-item {{ request()->routeIs('interface.dependency.test') ? 'active' : '' }}">
+                            🔌 Interface DI Test
+                        </a>
+                        <a href="{{ route('interface.singleton') }}" class="nav-item {{ request()->routeIs('interface.singleton') ? 'active' : '' }}">
+                            🔐 Interface Singleton
+                        </a>
+                        <a href="{{ route('interface.dependency.shared') }}" class="nav-item {{ request()->routeIs('interface.dependency.shared') ? 'active' : '' }}">
+                            🤝 Interface Shared Test
+                        </a>
+                    </div>
+                    
+                    <!-- Persistence Tests -->
+                    <div class="nav-category-title">Request Persistence</div>
+                    <div class="nav-group">
+                        <a href="{{ route('request.persistence.test') }}" class="nav-item {{ request()->routeIs('request.persistence.test') ? 'active' : '' }}">
+                            📊 Concrete Persistence
+                        </a>
+                        <a href="{{ route('interface.request.persistence.test') }}" class="nav-item {{ request()->routeIs('interface.request.persistence.test') ? 'active' : '' }}">
+                            📈 Interface Persistence
+                        </a>
+                    </div>
+                    
+                    <!-- Advanced Tests -->
+                    <div class="nav-category-title">Advanced Patterns</div>
+                    <div class="nav-group">
+                        <a href="{{ route('application.injection.test') }}" class="nav-item {{ request()->routeIs('application.injection.test') ? 'active' : '' }}">
+                            🚀 Application Injection
+                        </a>
+                        <a href="{{ route('pure.singleton.test') }}" class="nav-item {{ request()->routeIs('pure.singleton.test') ? 'active' : '' }}">
+                            ⭐ Pure Singleton
+                        </a>
+                        <a href="{{ route('request.scoped.test') }}" class="nav-item {{ request()->routeIs('request.scoped.test') ? 'active' : '' }}">
+                            🎯 Request Scoped (Octane Safe)
+                        </a>
+                    </div>
+                    
+                    <!-- Utility Actions -->
+                    <div class="nav-category-title">Utilities</div>
+                    <div class="nav-group">
+                        <a href="{{ route('healthcheck') }}" class="nav-item utility {{ request()->routeIs('healthcheck') ? 'active' : '' }}">
+                            ❤️ Health Check
+                        </a>
+                        <a href="{{ route('persistence.cache.clear') }}" class="nav-item utility" onclick="clearCache(event)">
+                            🗑️ Clear Cache
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Breadcrumb -->
+            @if(!request()->routeIs('tests.index'))
+            <div class="nav-breadcrumb">
+                <div class="breadcrumb-path">
+                    <a href="{{ route('tests.index') }}" style="color: #95a5a6; text-decoration: none;">Test Suite</a>
+                    <span class="breadcrumb-sep">→</span>
+                    <span class="breadcrumb-current">@yield('page_title', 'Current Test')</span>
+                </div>
+            </div>
+            @endif
+        </div>
+    </nav>
+    
     <div class="main-content">
         @yield('content')
     </div>
@@ -403,6 +625,29 @@
         function toggleAppDetails() {
             const details = document.getElementById('appDetails');
             details.classList.toggle('show');
+        }
+        
+        function clearCache(event) {
+            event.preventDefault();
+            if (confirm('Clear all test cache data? This will reset persistence test history.')) {
+                fetch('{{ route("persistence.cache.clear") }}', {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    // Optionally reload the current page to show updated data
+                    if (window.location.pathname.includes('persistence')) {
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    alert('Error clearing cache: ' + error.message);
+                });
+            }
         }
         
         // Auto-refresh page every 30 seconds to show live application instance metrics

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Application Injection Test')
+@section('page_title', 'Application Injection Test')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
